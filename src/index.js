@@ -15,7 +15,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     const { error } = this.state;
-    if (error) {
+    if (error !== null) {
       return (
         <div>
           <h1>Error occured in the child component!</h1>
@@ -31,22 +31,18 @@ const BadComponent = () =>
   Date.now() % 2 === 0 ? <div>Bad Component</div> : new Error("Random error!");
 
 class App extends Component {
-  state = { errorBoundaryKey: 0 };
+  errorBoundary = React.createRef();
 
   clearErrorBoundary = () =>
-    this.setState(prevState => ({
-      errorBoundaryKey: prevState.errorBoundaryKey + 1
-    }));
+    this.errorBoundary.current.setState({ error: null });
 
   render() {
-    const { errorBoundaryKey } = this.state;
-
     return (
       <div className="App">
         <button onClick={() => this.forceUpdate()}>Re-render</button>
         <button onClick={this.clearErrorBoundary}>Clear ErrorBoundary</button>
 
-        <ErrorBoundary key={errorBoundaryKey}>
+        <ErrorBoundary ref={this.errorBoundary}>
           <BadComponent />
         </ErrorBoundary>
       </div>
